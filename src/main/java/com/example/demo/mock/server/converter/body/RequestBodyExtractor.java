@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by OTARANOVSKYI on 28.07.2017.
  */
 @Component
-public class BodyExtractor {
+public class RequestBodyExtractor {
 
     public static final String BODY = "body";
     public static final String VALUE = "value";
