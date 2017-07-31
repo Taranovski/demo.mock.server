@@ -1,6 +1,5 @@
 package com.example.demo.mock.server.service;
 
-import com.example.demo.mock.server.converter.EventCriteriaExtractor;
 import com.example.demo.mock.server.service.recording.RecordingService;
 import com.example.demo.mock.server.storage.HostConfigurationStorage;
 import com.example.demo.mock.server.storage.ResponseRepository;
@@ -25,12 +24,10 @@ public class MockServerService {
 
     @Autowired
     private HostConfigurationStorage hostConfigurationStorage;
-
     @Autowired
     private RecordingService recordingService;
-
     @Autowired
-    private EventCriteriaExtractor eventCriteriaExtractor;
+    private EventCriteriaProvider eventCriteriaProvider;
     @Autowired
     private ResponseRepository responseRepository;
 
@@ -63,7 +60,7 @@ public class MockServerService {
                 .callback(new ExpectationCallback() {
                     @Override
                     public HttpResponse handle(HttpRequest httpRequest) {
-                        return responseRepository.findResponseByCriteria(eventCriteriaExtractor.getFromRequest(httpRequest));
+                        return responseRepository.findResponseByCriteria(eventCriteriaProvider.forRequest(httpRequest));
                     }
                 });
     }

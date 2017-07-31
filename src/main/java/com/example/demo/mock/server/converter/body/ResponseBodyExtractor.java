@@ -1,7 +1,7 @@
 package com.example.demo.mock.server.converter.body;
 
-import com.example.demo.mock.server.converter.body.handler.JsonBodyExtractorHandler;
-import com.example.demo.mock.server.converter.body.handler.XmlBodyExtractorHandler;
+import com.example.demo.mock.server.converter.body.extractor.JsonBodyExtractor;
+import com.example.demo.mock.server.converter.body.extractor.XmlBodyExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,10 @@ public class ResponseBodyExtractor {
     private static final String BODY = "body";
 
     @Autowired
-    private XmlBodyExtractorHandler xmlBodyExtractorHandler;
+    private XmlBodyExtractor xmlBodyExtractorHandler;
 
     @Autowired
-    private JsonBodyExtractorHandler jsonBodyExtractorHandler;
+    private JsonBodyExtractor jsonBodyExtractorHandler;
 
     public Map<String, Object> getBody(Map<String, Object> content) {
         if (content.isEmpty() || !content.containsKey(BODY)) {

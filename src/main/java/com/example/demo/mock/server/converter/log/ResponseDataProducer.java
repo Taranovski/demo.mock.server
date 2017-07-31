@@ -1,4 +1,4 @@
-package com.example.demo.mock.server.converter;
+package com.example.demo.mock.server.converter.log;
 
 import com.example.demo.mock.server.converter.body.ResponseBodyExtractor;
 import com.example.demo.mock.server.domain.ResponseData;
@@ -16,12 +16,12 @@ public class ResponseDataProducer {
     @Autowired
     private ResponseBodyExtractor responseBodyExtractor;
     @Autowired
-    private RequestExtractor requestExtractor;
+    private LogExtractor logExtractor;
 
     public ResponseData createResponse(Map map) {
         String message = getFormattedMessage(map);
 
-        Map<String, Object> response = requestExtractor.getResponse(message);
+        Map<String, Object> response = logExtractor.getResponse(message);
 
         Map<String, Object> body = responseBodyExtractor.getBody(response);
 

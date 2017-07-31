@@ -13,6 +13,13 @@ import java.util.Map;
 @Component
 public class SearchByCriteriaService {
     public ResponseData find(Map<RequestData, ResponseData> storage, RequestCriteria requestCriteria) {
+
+        for (Map.Entry<RequestData, ResponseData> entry : storage.entrySet()) {
+            if (requestCriteria.satisfiedBy(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+
         return null;
     }
 }

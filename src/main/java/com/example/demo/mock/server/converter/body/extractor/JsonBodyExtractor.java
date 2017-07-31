@@ -1,6 +1,6 @@
-package com.example.demo.mock.server.converter.body.handler;
+package com.example.demo.mock.server.converter.body.extractor;
 
-import com.example.demo.mock.server.converter.body.BodyExtractorHandler;
+import com.example.demo.mock.server.converter.body.BodyExtractor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by OTARANOVSKYI on 31.07.2017.
  */
 @Component
-public class JsonBodyExtractorHandler implements BodyExtractorHandler {
+public class JsonBodyExtractor implements BodyExtractor {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 

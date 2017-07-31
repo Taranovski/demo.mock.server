@@ -1,7 +1,7 @@
 package com.example.demo.mock.server.converter.body;
 
-import com.example.demo.mock.server.converter.body.handler.StringBodyExtractorHandler;
-import com.example.demo.mock.server.converter.body.handler.XmlBodyExtractorHandler;
+import com.example.demo.mock.server.converter.body.extractor.StringBodyExtractor;
+import com.example.demo.mock.server.converter.body.extractor.XmlBodyExtractor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,14 +19,14 @@ public class RequestBodyExtractor {
     public static final String VALUE = "value";
     public static final String TYPE = "type";
 
-    private Map<String, BodyExtractorHandler> handlers;
+    private Map<String, BodyExtractor> handlers;
 
     @PostConstruct
     public void init() {
         handlers = new HashMap<>();
 
-        handlers.put("STRING", new StringBodyExtractorHandler());
-        handlers.put("XML", new XmlBodyExtractorHandler());
+        handlers.put("STRING", new StringBodyExtractor());
+        handlers.put("XML", new XmlBodyExtractor());
     }
 
 
@@ -44,10 +44,10 @@ public class RequestBodyExtractor {
         String type = (String) body.get(TYPE);
         String value = (String) body.get(VALUE);
 
-        BodyExtractorHandler bodyExtractorHandler = handlers.get(type);
+        BodyExtractor bodyExtractor = handlers.get(type);
 
-        if (bodyExtractorHandler != null) {
-            return bodyExtractorHandler.convertBody(value);
+        if (bodyExtractor != null) {
+            return bodyExtractor.convertBody(value);
         }
 
         throw new RuntimeException("unknown type" + type);
