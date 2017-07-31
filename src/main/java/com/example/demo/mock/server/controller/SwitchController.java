@@ -26,6 +26,6 @@ public class SwitchController {
     public String switchToMock(){
         mockServerService.switchToMock();
 
-        return "switched to recording";
+        return "switched to mock";
     }
 }

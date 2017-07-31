@@ -64,7 +64,7 @@ public class RequestData {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder()
                 .append(request)
                 .append(body)
                 .append(host)

@@ -15,14 +15,8 @@ public class RequestDataProducer {
 
     @Autowired
     private RequestBodyExtractor requestBodyExtractor;
-    @Autowired
-    private LogExtractor logExtractor;
 
-    public RequestData createRequestData(Map map) {
-        String message = getFormattedMessage(map);
-
-        Map<String, Object> request = logExtractor.getRequest(message);
-
+    public RequestData createRequestData(Map request) {
         Map<String, Object> body = requestBodyExtractor.getBody(request);
 
         RequestData requestData = new RequestData();
@@ -33,7 +27,4 @@ public class RequestDataProducer {
         return requestData;
     }
 
-    private String getFormattedMessage(Map map) {
-        return (String) map.get("formattedMessage");
-    }
 }

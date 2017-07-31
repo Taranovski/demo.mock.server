@@ -5,6 +5,7 @@ import com.example.demo.mock.server.storage.HostConfigurationStorage;
 import com.example.demo.mock.server.storage.ResponseRepository;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.mock.action.ExpectationCallback;
+import org.mockserver.model.HttpClassCallback;
 import org.mockserver.model.HttpForward;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;

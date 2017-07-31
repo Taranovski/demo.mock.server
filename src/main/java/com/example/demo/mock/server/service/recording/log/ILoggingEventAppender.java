@@ -7,9 +7,8 @@ import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.Status;
+import com.example.demo.mock.server.util.WithObjectMapper;
 import com.example.demo.mock.server.service.recording.EventHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.util.List;
 import java.util.Map;
@@ -20,16 +19,10 @@ import java.util.Map;
 public class ILoggingEventAppender implements Appender<ILoggingEvent> {
 
     private final EventHandler eventHandler;
-    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    {
-        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    }
 
     public ILoggingEventAppender(EventHandler eventHandler) {
         this.eventHandler = eventHandler;
     }
-
 
     public void start() {
 
@@ -100,7 +93,7 @@ public class ILoggingEventAppender implements Appender<ILoggingEvent> {
     }
 
     public void doAppend(ILoggingEvent iLoggingEvent) throws LogbackException {
-        Map convertValue = OBJECT_MAPPER.convertValue(iLoggingEvent, Map.class);
+        Map<String, Object> convertValue = WithObjectMapper.OBJECT_MAPPER.convertValue(iLoggingEvent, Map.class);
 
         eventHandler.handle(convertValue);
     }

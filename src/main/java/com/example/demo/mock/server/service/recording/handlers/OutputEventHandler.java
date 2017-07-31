@@ -1,5 +1,6 @@
 package com.example.demo.mock.server.service.recording.handlers;
 
+import com.example.demo.mock.server.converter.log.LogExtractor;
 import com.example.demo.mock.server.converter.log.ResponseDataProducer;
 import com.example.demo.mock.server.domain.RequestData;
 import com.example.demo.mock.server.domain.ResponseData;
@@ -16,7 +17,7 @@ import java.util.Map;
  * Created by OTARANOVSKYI on 28.07.2017.
  */
 @Component
-public class OutputEventHandler implements EventHandler {
+public class OutputEventHandler extends EventHandler {
 
     @Autowired
     private InputTemporalStorage inputTemporalStorage;
@@ -26,11 +27,16 @@ public class OutputEventHandler implements EventHandler {
     private RecordingStorage recordingStorage;
     @Autowired
     private ContextUtils contextUtils;
-
+    @Autowired
+    private LogExtractor logExtractor;
 
     @Override
-    public void handle(Map convertValue) {
-        ResponseData responseData = responseDataProducer.createResponse(convertValue);
+    public void handle(Map<String, Object> logEvent) {
+        String message = getFormattedMessage(logEvent);
+
+        Map<String, Object> response = logExtractor.getResponse(message);
+
+        ResponseData responseData = responseDataProducer.createResponse(response);
 
         String uuid = contextUtils.getFromContext(SESSION_KEY);
 
