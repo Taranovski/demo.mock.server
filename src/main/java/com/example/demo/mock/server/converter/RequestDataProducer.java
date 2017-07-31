@@ -1,11 +1,10 @@
 package com.example.demo.mock.server.converter;
 
-import com.example.demo.mock.server.converter.body.BodyExtractor;
+import com.example.demo.mock.server.converter.body.RequestBodyExtractor;
 import com.example.demo.mock.server.domain.RequestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Map;
 public class RequestDataProducer {
 
     @Autowired
-    private BodyExtractor bodyExtractor;
+    private RequestBodyExtractor requestBodyExtractor;
     @Autowired
     private RequestExtractor requestExtractor;
 
@@ -24,7 +23,7 @@ public class RequestDataProducer {
 
         Map<String, Object> request = requestExtractor.getRequest(message);
 
-        Map<String, Object> body = bodyExtractor.getBody(request);
+        Map<String, Object> body = requestBodyExtractor.getBody(request);
 
         RequestData requestData = new RequestData();
 

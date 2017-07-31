@@ -1,5 +1,8 @@
 package com.example.demo.mock.server.domain;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.Map;
 
 /**
@@ -41,5 +44,31 @@ public class RequestData {
 
     public Integer getPort() {
         return port;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RequestData that = (RequestData) o;
+
+        return new EqualsBuilder()
+                .append(host, that.host)
+                .append(port, that.port)
+                .append(request, that.request)
+                .append(body, that.body)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(request)
+                .append(body)
+                .append(host)
+                .append(port)
+                .toHashCode();
     }
 }
