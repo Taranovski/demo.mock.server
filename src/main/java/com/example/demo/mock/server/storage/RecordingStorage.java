@@ -1,12 +1,11 @@
 package com.example.demo.mock.server.storage;
 
-import com.example.demo.mock.server.domain.RequestCriteria;
-import com.example.demo.mock.server.domain.RequestData;
-import com.example.demo.mock.server.domain.ResponseData;
-import com.example.demo.mock.server.service.search.SearchByCriteriaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.tuple.Pair;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.HttpResponse;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,20 +15,30 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class RecordingStorage {
 
-    @Autowired
-    private SearchByCriteriaService searchByCriteriaService;
+    private static Map<HttpRequest, Pair<HttpResponse, Long>> storage = new ConcurrentHashMap<>();
 
-    private Map<RequestData, ResponseData> storage = new ConcurrentHashMap<>();
+    private static volatile boolean initialized = false;
 
-    public void saveRequestAndResponse(RequestData requestData, ResponseData responseData) {
-        storage.put(requestData, responseData);
+    @PostConstruct
+    public void init() {
+        initialized = true;
     }
 
-    public void reset(){
+    public static void save(HttpRequest requestData, HttpResponse responseData, long delay) {
+        if (initialized) {
+            storage.put(requestData, Pair.of(responseData, delay));
+        }
+    }
+
+    public void saveRequestAndResponse(HttpRequest requestData, HttpResponse responseData, long delay) {
+        storage.put(requestData, Pair.of(responseData, delay));
+    }
+
+    public void reset() {
         storage.clear();
     }
 
-    public ResponseData findByCriteria(RequestCriteria requestCriteria) {
-        return searchByCriteriaService.find(storage, requestCriteria);
+    public Map<HttpRequest, Pair<HttpResponse, Long>> getStorage() {
+        return storage;
     }
 }

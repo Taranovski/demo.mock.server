@@ -1,8 +1,7 @@
 package com.example.demo.mock.server.storage;
 
-import com.example.demo.mock.server.converter.http.ResponseDataToHttpResponseConverter;
 import com.example.demo.mock.server.domain.RequestCriteria;
-import com.example.demo.mock.server.domain.ResponseData;
+import com.example.demo.mock.server.service.search.SearchByCriteriaService;
 import org.mockserver.model.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,15 +13,10 @@ import org.springframework.stereotype.Component;
 public class ResponseRepository {
 
     @Autowired
-    private ResponseDataToHttpResponseConverter responseDataToHttpResponseConverter;
-
-    @Autowired
-    private RecordingStorage recordingStorage;
+    private SearchByCriteriaService searchByCriteriaService;
 
     public HttpResponse findResponseByCriteria(RequestCriteria requestCriteria) {
-        ResponseData responseData = recordingStorage.findByCriteria(requestCriteria);
-
-        return responseDataToHttpResponseConverter.createHttpResponse(responseData);
+        return searchByCriteriaService.find(requestCriteria);
     }
 
 }

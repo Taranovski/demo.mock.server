@@ -1,4 +1,4 @@
-package com.example.demo.mock.server.service.context;
+package com.example.demo.mock.server.util.context;
 
 import org.springframework.stereotype.Component;
 

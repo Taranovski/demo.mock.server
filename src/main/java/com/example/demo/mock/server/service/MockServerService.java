@@ -1,11 +1,9 @@
 package com.example.demo.mock.server.service;
 
-import com.example.demo.mock.server.service.recording.RecordingService;
 import com.example.demo.mock.server.storage.HostConfigurationStorage;
 import com.example.demo.mock.server.storage.ResponseRepository;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.mock.action.ExpectationCallback;
-import org.mockserver.model.HttpClassCallback;
 import org.mockserver.model.HttpForward;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
@@ -26,20 +24,18 @@ public class MockServerService {
     @Autowired
     private HostConfigurationStorage hostConfigurationStorage;
     @Autowired
-    private RecordingService recordingService;
-    @Autowired
     private EventCriteriaProvider eventCriteriaProvider;
     @Autowired
     private ResponseRepository responseRepository;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         startServer();
         switchToRecording();
     }
 
     @PreDestroy
-    public void destroy(){
+    public void destroy() {
         stopServer();
     }
 
@@ -47,11 +43,8 @@ public class MockServerService {
         restart();
 
         mockServer
-                .dumpToLog()
                 .when(HttpRequest.request())
                 .forward(HttpForward.forward().withHost(hostConfigurationStorage.getHost()).withPort(hostConfigurationStorage.getPort()));
-
-        recordingService.startRecordingOfEventsKeyAndContent();
     }
 
     public void switchToMock() {
@@ -81,9 +74,7 @@ public class MockServerService {
 
     private void restart() {
         stopServer();
-        recordingService.stopRecordingEvents();
         startServer();
     }
-
 
 }
