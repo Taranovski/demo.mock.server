@@ -1,4 +1,4 @@
-package com.example.demo.mock.server.storage;
+package com.example.demo.mock.server.repository;
 
 import org.springframework.stereotype.Component;
 

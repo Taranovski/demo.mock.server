@@ -1,14 +1,13 @@
 package com.example.demo.mock.server.service.search;
 
 import com.example.demo.mock.server.domain.RequestCriteria;
-import com.example.demo.mock.server.storage.RecordingStorage;
-import org.apache.commons.lang3.tuple.Pair;
-import org.mockserver.model.HttpRequest;
+import com.example.demo.mock.server.domain.StoredRecord;
+import com.example.demo.mock.server.repository.RequestResponseStorage;
+import com.example.demo.mock.server.repository.StorageQualifiers;
 import org.mockserver.model.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * Created by OTARANOVSKYI on 28.07.2017.
@@ -17,13 +16,13 @@ import java.util.Map;
 public class SearchByCriteriaService {
 
     @Autowired
-    private RecordingStorage recordingStorage;
+    @Qualifier(StorageQualifiers.IN_MEMORY)
+    private RequestResponseStorage<? extends StoredRecord> recordingStorage;
 
     public HttpResponse find(RequestCriteria requestCriteria) {
-        for (Map.Entry<HttpRequest, Pair<HttpResponse, Long>> entry : recordingStorage.getStorage().entrySet()) {
-            if (requestCriteria.satisfiedBy(entry.getKey())) {
-                Pair<HttpResponse, Long> value = entry.getValue();
-                return value.getKey();
+        for (StoredRecord entry : recordingStorage.getAllRecords()) {
+            if (requestCriteria.satisfiedBy(entry.getRequest())) {
+                return entry.getResponse();
             }
         }
 

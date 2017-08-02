@@ -1,7 +1,7 @@
 package com.example.demo.mock.server.service;
 
-import com.example.demo.mock.server.storage.HostConfigurationStorage;
-import com.example.demo.mock.server.storage.ResponseRepository;
+import com.example.demo.mock.server.repository.HostConfigurationStorage;
+import com.example.demo.mock.server.repository.ResponseRepository;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.mock.action.ExpectationCallback;
 import org.mockserver.model.HttpForward;

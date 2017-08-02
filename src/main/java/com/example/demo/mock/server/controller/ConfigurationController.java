@@ -1,6 +1,6 @@
 package com.example.demo.mock.server.controller;
 
-import com.example.demo.mock.server.storage.HostConfigurationStorage;
+import com.example.demo.mock.server.repository.HostConfigurationStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

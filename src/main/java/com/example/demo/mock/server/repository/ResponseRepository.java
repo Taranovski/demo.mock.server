@@ -1,4 +1,4 @@
-package com.example.demo.mock.server.storage;
+package com.example.demo.mock.server.repository;
 
 import com.example.demo.mock.server.domain.RequestCriteria;
 import com.example.demo.mock.server.service.search.SearchByCriteriaService;
