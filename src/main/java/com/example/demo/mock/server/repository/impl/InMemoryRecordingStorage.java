@@ -35,7 +35,7 @@ public class InMemoryRecordingStorage implements RequestResponseStorage<InMemory
     }
 
     @Override
-    public Iterable<InMemoryStoredRecord> getAllRecords() {
+    public List<InMemoryStoredRecord> getAllRecords() {
         return inMemoryStoredRecords;
     }
 

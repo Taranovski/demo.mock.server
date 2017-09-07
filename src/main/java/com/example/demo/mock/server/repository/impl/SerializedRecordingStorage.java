@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by OTARANOVSKYI on 02.08.2017.
@@ -33,26 +33,10 @@ public class SerializedRecordingStorage implements RequestResponseStorage<Serial
     }
 
     @Override
-    public Iterable<SerializedStoredRecord> getAllRecords() {
-        final Iterator<byte[]> iterator = requestsAndResponses.iterator();
-        return new Iterable<SerializedStoredRecord>() {
-            @Override
-            public Iterator<SerializedStoredRecord> iterator() {
-                return new Iterator<SerializedStoredRecord>() {
-                    @Override
-                    public boolean hasNext() {
-                        return iterator.hasNext();
-                    }
-
-                    @Override
-                    public SerializedStoredRecord next() {
-                        byte[] next = iterator.next();
-
-                        return serializationProvider.getFromBytes(next);
-                    }
-                };
-            }
-        };
+    public List<SerializedStoredRecord> getAllRecords() {
+        return requestsAndResponses.stream()
+                .map(serializationProvider::getFromBytes)
+                .collect(Collectors.toList());
     }
 
     @Override

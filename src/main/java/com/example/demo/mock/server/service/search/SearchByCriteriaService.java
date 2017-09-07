@@ -16,16 +16,15 @@ import org.springframework.stereotype.Component;
 public class SearchByCriteriaService {
 
     @Autowired
-    @Qualifier(StorageQualifiers.IN_MEMORY)
+    @Qualifier(StorageQualifiers.FS_STORED)
     private RequestResponseStorage<? extends StoredRecord> recordingStorage;
 
     public HttpResponse find(RequestCriteria requestCriteria) {
-        for (StoredRecord entry : recordingStorage.getAllRecords()) {
-            if (requestCriteria.satisfiedBy(entry.getRequest())) {
-                return entry.getResponse();
-            }
-        }
-
-        return null;
+        return recordingStorage.getAllRecords()
+                .stream()
+                .filter(record -> requestCriteria.satisfiedBy(record.getRequest()))
+                .findFirst()
+                .map(StoredRecord::getResponse)
+                .orElseGet(HttpResponse::notFoundResponse);
     }
 }

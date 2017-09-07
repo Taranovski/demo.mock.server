@@ -3,10 +3,8 @@ package com.example.demo.mock.server.service;
 import com.example.demo.mock.server.repository.HostConfigurationStorage;
 import com.example.demo.mock.server.repository.ResponseRepository;
 import org.mockserver.integration.ClientAndServer;
-import org.mockserver.mock.action.ExpectationCallback;
 import org.mockserver.model.HttpForward;
 import org.mockserver.model.HttpRequest;
-import org.mockserver.model.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +21,6 @@ public class MockServerService {
 
     @Autowired
     private HostConfigurationStorage hostConfigurationStorage;
-    @Autowired
-    private EventCriteriaProvider eventCriteriaProvider;
     @Autowired
     private ResponseRepository responseRepository;
 
@@ -51,12 +47,7 @@ public class MockServerService {
         restart();
 
         mockServer.when(HttpRequest.request())
-                .callback(new ExpectationCallback() {
-                    @Override
-                    public HttpResponse handle(HttpRequest httpRequest) {
-                        return responseRepository.findResponseByCriteria(eventCriteriaProvider.forRequest(httpRequest));
-                    }
-                });
+                .callback(request -> responseRepository.findResponseByCriteria(request));
     }
 
 
