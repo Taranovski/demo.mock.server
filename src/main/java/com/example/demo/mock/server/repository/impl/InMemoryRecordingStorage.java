@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by OTARANOVSKYI on 26.07.2017.
@@ -35,8 +36,8 @@ public class InMemoryRecordingStorage implements RequestResponseStorage<InMemory
     }
 
     @Override
-    public List<InMemoryStoredRecord> getAllRecords() {
-        return inMemoryStoredRecords;
+    public Stream<InMemoryStoredRecord> getAllRecords() {
+        return inMemoryStoredRecords.stream();
     }
 
     @Override

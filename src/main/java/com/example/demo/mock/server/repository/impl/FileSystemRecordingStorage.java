@@ -1,7 +1,6 @@
 package com.example.demo.mock.server.repository.impl;
 
-import com.example.demo.mock.server.domain.StoredRecord;
-import com.example.demo.mock.server.domain.record.InMemoryStoredRecord;
+import com.example.demo.mock.server.domain.record.LazyFSStoredRecord;
 import com.example.demo.mock.server.repository.RequestResponseStorage;
 import com.example.demo.mock.server.repository.StorageQualifiers;
 import com.google.common.base.Strings;
@@ -21,64 +20,40 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Component
 @Qualifier(StorageQualifiers.FS_STORED)
-public class FileSystemRecordingStorage implements RequestResponseStorage<StoredRecord> {
+public class FileSystemRecordingStorage implements RequestResponseStorage<LazyFSStoredRecord> {
 
-    private static final String REQUEST_FILE_NAME = "request.xml";
-    private static final String RESPONSE_FILE_NAME = "response.xml";
+    public static final String REQUEST_FILE_NAME = "request.xml";
+    public static final String RESPONSE_FILE_NAME = "response.xml";
 
-    private Path storage = Paths.get("storage");
+    private static final Path storage = Paths.get("storage").toAbsolutePath();
 
-    private void put(HttpRequest requestData, HttpResponse responseData, long delay) {
-        try {
-            String requestPath = requestData.getPath().getValue();
-            File folder = new File(storage.toFile(), requestPath);
-            folder = new File(folder, String.valueOf(getLastId(folder) + 1));
-            save(folder, REQUEST_FILE_NAME, requestData.getBodyAsString());
-            save(folder, RESPONSE_FILE_NAME, responseData.getBodyAsString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private static void put(HttpRequest requestData, HttpResponse responseData) {
+        File folder = new File(storage.toFile(), requestData.getPath().getValue());
+        folder = new File(folder, String.valueOf(requestData.getBodyAsString().hashCode()));
+        folder = new File(folder, String.valueOf(getLastId(folder) + 1));
+        if (!folder.exists() && !folder.mkdirs())
+            throw new RuntimeException("Can't create directory:" + folder.toString());
+        save(folder, REQUEST_FILE_NAME, requestData.getBodyAsString());
+        save(folder, RESPONSE_FILE_NAME, responseData.getBodyAsString());
     }
 
-    private void save(File folder, String fileName, String value) throws IOException {
-        folder.mkdirs();
+    private static void save(File folder, String fileName, String value) {
         try (Writer writer = new FileWriter(new File(folder, fileName))) {
             writer.write(Strings.nullToEmpty(value));
-        }
-    }
-
-    private InMemoryStoredRecord get(Pair<Path, Path> currentPath) {
-        try {
-            InMemoryStoredRecord record = new InMemoryStoredRecord();
-            HttpRequest request = HttpRequest.request(makePathFromFile(currentPath.getRight()));
-            request.withBody(makeBodyFromFile(currentPath.getLeft(), REQUEST_FILE_NAME));
-            record.setRequest(request);
-            record.setResponse(HttpResponse.response(makeBodyFromFile(currentPath.getLeft(), RESPONSE_FILE_NAME)));
-            return record;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String makePathFromFile(Path folder) {
-        return "/"+folder.getParent().toString().replaceAll("\\\\+", "/");
-    }
-
-    private String makeBodyFromFile(Path path, String filename) throws IOException {
-        return Strings.emptyToNull(new String(Files.readAllBytes(path.resolve(filename))));
-    }
-
-    private long getLastId(File folder) {
-        File[] array = folder.listFiles();
-        if (array == null) {
-            return 0;
-        }
-        return Arrays.stream(array)
+    private static long getLastId(File folder) {
+        return Optional.ofNullable(folder.listFiles())
+                .map(Arrays::stream)
+                .orElse(Stream.empty())
                 .filter(File::isDirectory)
                 .mapToLong(value -> Long.valueOf(value.getName()))
                 .max()
@@ -87,21 +62,21 @@ public class FileSystemRecordingStorage implements RequestResponseStorage<Stored
 
     @Override
     public void saveRequestAndResponse(HttpRequest requestData, HttpResponse responseData, long delay) {
-        put(requestData, responseData, delay);
+        put(requestData, responseData);
     }
 
     @Override
-    public List<StoredRecord> getAllRecords() {
-        Collection<File> collection = FileUtils.listFiles(storage.toFile(), new String[]{"xml"}, true);
-        return collection.stream()
+    @SuppressWarnings("unchecked")//FileUtils.listFiles returns not generified Collection
+    public Stream<LazyFSStoredRecord> getAllRecords() {
+        Collection<File> files = FileUtils.listFiles(storage.toFile(), new String[]{"xml"}, true);
+        return files.stream()
                 .map(File::getParentFile)
                 .distinct()
                 .map(File::toURI)
                 .map(Paths::get)
                 .map(Path::toAbsolutePath)
-                .map(path -> Pair.of(path, storage.toAbsolutePath().relativize(path)))
-                .map(this::get)
-                .collect(Collectors.toList());
+                .map(path -> Pair.of(path, storage.relativize(path.getParent())))
+                .map(LazyFSStoredRecord::new);
     }
 
     @Override

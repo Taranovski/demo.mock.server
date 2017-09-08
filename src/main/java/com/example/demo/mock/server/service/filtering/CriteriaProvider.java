@@ -1,8 +1,10 @@
 package com.example.demo.mock.server.service.filtering;
 
-import com.example.demo.mock.server.domain.RequestCriteria;
+import com.example.demo.mock.server.domain.StoredRecord;
 import org.mockserver.model.HttpRequest;
 
-public interface CriteriaProvider {
-    RequestCriteria forRequest(HttpRequest httpRequest);
+import java.util.function.Predicate;
+
+public interface CriteriaProvider<T extends StoredRecord> {
+    Predicate<T> forRequest(HttpRequest httpRequest);
 }

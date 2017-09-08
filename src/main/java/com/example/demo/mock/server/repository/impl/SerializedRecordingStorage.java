@@ -1,9 +1,9 @@
 package com.example.demo.mock.server.repository.impl;
 
-import com.example.demo.mock.server.repository.RequestResponseStorage;
-import com.example.demo.mock.server.repository.StorageQualifiers;
-import com.example.demo.mock.server.repository.SerializationProvider;
 import com.example.demo.mock.server.domain.record.SerializedStoredRecord;
+import com.example.demo.mock.server.repository.RequestResponseStorage;
+import com.example.demo.mock.server.repository.SerializationProvider;
+import com.example.demo.mock.server.repository.StorageQualifiers;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by OTARANOVSKYI on 02.08.2017.
@@ -33,10 +33,9 @@ public class SerializedRecordingStorage implements RequestResponseStorage<Serial
     }
 
     @Override
-    public List<SerializedStoredRecord> getAllRecords() {
+    public Stream<SerializedStoredRecord> getAllRecords() {
         return requestsAndResponses.stream()
-                .map(serializationProvider::getFromBytes)
-                .collect(Collectors.toList());
+                .map(serializationProvider::getFromBytes);
     }
 
     @Override
