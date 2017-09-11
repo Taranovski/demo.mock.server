@@ -34,7 +34,7 @@ public class FileSystemRecordingStorage implements RequestResponseStorage<LazyFS
 
     private static void put(HttpRequest requestData, HttpResponse responseData) {
         File folder = new File(storage.toFile(), requestData.getPath().getValue());
-        folder = new File(folder, String.valueOf(requestData.getBodyAsString().hashCode()));
+        folder = new File(folder, String.valueOf(Strings.nullToEmpty(requestData.getBodyAsString()).hashCode()));
         folder = new File(folder, String.valueOf(getLastId(folder) + 1));
         if (!folder.exists() && !folder.mkdirs())
             throw new RuntimeException("Can't create directory:" + folder.toString());

@@ -2,6 +2,7 @@ package com.example.demo.mock.server.service.filtering;
 
 import com.example.demo.mock.server.domain.record.LazyFSStoredRecord;
 import com.example.demo.mock.server.repository.StorageQualifiers;
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.mockserver.model.HttpRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,7 +18,7 @@ public class EventByBodyHashCriteriaProvider implements CriteriaProvider<LazyFSS
 
     public Predicate<LazyFSStoredRecord> forRequest(HttpRequest httpRequest) {
         return record -> new EqualsBuilder()
-                .append(httpRequest.getBodyAsString().hashCode(), record.getBodyHash())
+                .append(Strings.nullToEmpty(httpRequest.getBodyAsString()).hashCode(), record.getBodyHash())
                 .isEquals();
     }
 }
