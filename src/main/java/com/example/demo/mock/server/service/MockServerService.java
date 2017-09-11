@@ -1,8 +1,9 @@
 package com.example.demo.mock.server.service;
 
-import com.example.demo.mock.server.HttpForwardExpectationCallback;
+import com.example.demo.mock.server.service.strategy.ForwardCallback;
+import com.example.demo.mock.server.service.strategy.ReplayCallback;
+import com.example.demo.mock.server.service.strategy.ReplayOrForwardCallback;
 import com.example.demo.mock.server.repository.HostConfigurationStorage;
-import com.example.demo.mock.server.repository.ResponseRepository;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,11 @@ public class MockServerService {
     @Autowired
     private HostConfigurationStorage hostConfigurationStorage;
     @Autowired
-    private ResponseRepository responseRepository;
+    private ReplayCallback replayCallback;
     @Autowired
-    private HttpForwardExpectationCallback forwardCallback;
+    private ForwardCallback forwardCallback;
+    @Autowired
+    private ReplayOrForwardCallback fallbackCallback;
 
     @PostConstruct
     public void init() {
@@ -46,9 +49,14 @@ public class MockServerService {
     public void switchToMock() {
         restart();
 
-        mockServer.when(HttpRequest.request()).callback(request -> responseRepository.findResponseByCriteria(request));
+        mockServer.when(HttpRequest.request()).callback(replayCallback);
     }
 
+    public void switchToMockWithFallback() {
+        restart();
+
+        mockServer.when(HttpRequest.request()).callback(fallbackCallback);
+    }
 
     private void startServer() {
         mockServer = ClientAndServer.startClientAndServer(hostConfigurationStorage.getProxyPort());

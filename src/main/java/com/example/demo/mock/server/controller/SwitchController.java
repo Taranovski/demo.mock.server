@@ -22,10 +22,18 @@ public class SwitchController {
 
         return "switched to recording";
     }
+
     @RequestMapping(method = RequestMethod.POST, path = "/mock")
     public String switchToMock(){
         mockServerService.switchToMock();
 
         return "switched to mock";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/mockWithFallback")
+    public String switchToMockOrFallbackForward(){
+        mockServerService.switchToMockWithFallback();
+
+        return "switched to mock with fallback";
     }
 }

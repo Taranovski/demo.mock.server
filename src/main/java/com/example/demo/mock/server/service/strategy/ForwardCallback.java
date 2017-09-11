@@ -1,4 +1,4 @@
-package com.example.demo.mock.server;
+package com.example.demo.mock.server.service.strategy;
 
 import com.example.demo.mock.server.repository.HostConfigurationStorage;
 import com.example.demo.mock.server.util.MockServerEnhancer;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.net.InetSocketAddress;
 
 @Component
-public class HttpForwardExpectationCallback implements ExpectationCallback {
+public class ForwardCallback implements ExpectationCallback {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
