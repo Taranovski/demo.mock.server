@@ -6,6 +6,7 @@ import org.mockserver.model.HttpResponse;
 /**
  * Created by OTARANOVSKYI on 01.08.2017.
  */
+@FunctionalInterface
 public interface InteractionCallback {
     void call(HttpRequest httpRequest, HttpResponse httpResponse, Long delay);
 }

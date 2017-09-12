@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 public class SearchByCriteriaService<R extends StoredRecord> {
 
     @Autowired
-    @Qualifier(StorageQualifiers.FS_STORED)
+    @Qualifier(StorageQualifiers.CURRENT_STORAGE_TYPE)
     private RequestResponseStorage<R> recordingStorage;
 
     public HttpResponse find(Predicate<R> criteria) {

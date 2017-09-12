@@ -21,7 +21,7 @@ public class ResponseRepository<R extends StoredRecord> {
     @Autowired
     private SearchByCriteriaService<R> searchByCriteriaService;
     @Autowired
-    @Qualifier(StorageQualifiers.FS_STORED)
+    @Qualifier(StorageQualifiers.CURRENT_STORAGE_TYPE)
     private List<CriteriaProvider<R>> criteriaProvider;
 
     public HttpResponse findResponseByCriteria(HttpRequest request) {
